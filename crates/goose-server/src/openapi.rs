@@ -7,7 +7,7 @@ use goose::conversation::Conversation;
 use goose::model::ModelConfig;
 use goose::permission::permission_confirmation::PrincipalType;
 use goose::providers::base::{ConfigKey, ModelInfo, ProviderMetadata, ProviderType};
-use goose::session::{Session, SessionInsights, SessionType};
+use goose::session::{Session, SessionInsights, SessionType, SystemInfo};
 use rmcp::model::{
     Annotations, Content, EmbeddedResource, Icon, ImageContent, JsonObject, RawAudioContent,
     RawEmbeddedResource, RawImageContent, RawResource, RawTextContent, ResourceContents, Role,
@@ -327,6 +327,7 @@ derive_utoipa!(Icon as IconSchema);
 #[openapi(
     paths(
         super::routes::status::status,
+        super::routes::status::system_info,
         super::routes::status::diagnostics,
         super::routes::mcp_ui_proxy::mcp_ui_proxy,
         super::routes::config_management::backup_config,
@@ -352,13 +353,19 @@ derive_utoipa!(Icon as IconSchema);
         super::routes::config_management::check_provider,
         super::routes::config_management::set_config_provider,
         super::routes::config_management::get_pricing,
+        super::routes::prompts::get_prompts,
+        super::routes::prompts::get_prompt,
+        super::routes::prompts::save_prompt,
+        super::routes::prompts::reset_prompt,
         super::routes::agent::start_agent,
         super::routes::agent::resume_agent,
+        super::routes::agent::stop_agent,
         super::routes::agent::restart_agent,
         super::routes::agent::update_working_dir,
         super::routes::agent::get_tools,
         super::routes::agent::read_resource,
         super::routes::agent::call_tool,
+        super::routes::agent::list_apps,
         super::routes::agent::update_from_session,
         super::routes::agent::agent_add_extension,
         super::routes::agent::agent_remove_extension,
@@ -424,6 +431,10 @@ derive_utoipa!(Icon as IconSchema);
         super::routes::config_management::PricingQuery,
         super::routes::config_management::PricingResponse,
         super::routes::config_management::PricingData,
+        super::routes::prompts::PromptsListResponse,
+        super::routes::prompts::PromptContentResponse,
+        super::routes::prompts::SavePromptRequest,
+        goose::prompt_template::Template,
         super::routes::action_required::ConfirmToolActionRequest,
         super::routes::reply::ChatRequest,
         super::routes::session::ImportSessionRequest,
@@ -483,6 +494,7 @@ derive_utoipa!(Icon as IconSchema);
         Session,
         SessionInsights,
         SessionType,
+        SystemInfo,
         Conversation,
         IconSchema,
         goose::session::extension_data::ExtensionData,
@@ -531,8 +543,11 @@ derive_utoipa!(Icon as IconSchema);
         super::routes::agent::ReadResourceResponse,
         super::routes::agent::CallToolRequest,
         super::routes::agent::CallToolResponse,
+        super::routes::agent::ListAppsRequest,
+        super::routes::agent::ListAppsResponse,
         super::routes::agent::StartAgentRequest,
         super::routes::agent::ResumeAgentRequest,
+        super::routes::agent::StopAgentRequest,
         super::routes::agent::RestartAgentRequest,
         super::routes::agent::UpdateWorkingDirRequest,
         super::routes::agent::UpdateFromSessionRequest,
@@ -545,6 +560,8 @@ derive_utoipa!(Icon as IconSchema);
         super::tunnel::TunnelInfo,
         super::tunnel::TunnelState,
         super::routes::telemetry::TelemetryEventRequest,
+        goose::goose_apps::GooseApp,
+        goose::goose_apps::WindowProps,
         goose::goose_apps::McpAppResource,
         goose::goose_apps::CspMetadata,
         goose::goose_apps::UiMetadata,
